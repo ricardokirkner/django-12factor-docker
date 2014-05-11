@@ -1,0 +1,20 @@
+web:
+  build: web
+  volumes:
+    - web/var/log/nginx:/var/log/nginx
+    - static:/var/www/example/static
+  ports:
+    - "8000:80"
+  links:
+    - app
+app:
+  build: .
+  command: make start
+  volumes:
+    - .:/code
+  expose:
+    - "8000"
+  links:
+    - db
+db:
+  image: orchardup/postgresql
