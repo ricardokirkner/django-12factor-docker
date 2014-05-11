@@ -1,10 +1,19 @@
 web:
+  build: web
+  volumes:
+    - web/var/log/nginx:/var/log/nginx
+    - static:/var/www/example/static
+  ports:
+    - "8000:80"
+  links:
+    - app
+app:
   build: .
-  command: foreman start
+  command: make start
   volumes:
     - .:/code
-  ports:
-    - 8000:8000
+  expose:
+    - "8000"
   links:
     - db
 db:
