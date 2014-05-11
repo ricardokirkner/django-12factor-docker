@@ -1,7 +1,7 @@
 FROM ubuntu:trusty
 
 # install system packages
-RUN apt-get -qq update && apt-get -qy install ruby python-pip python-dev libpq-dev
+RUN apt-get -qq update && apt-get -qy install ruby python-pip python-dev libpq-dev postgresql-client
 RUN gem install -q foreman
 
 # prepare directories
