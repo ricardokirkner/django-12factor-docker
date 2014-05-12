@@ -16,5 +16,8 @@ app:
     - "8000"
   links:
     - db
+    - amqp
 db:
   image: orchardup/postgresql
+amqp:
+  image: tutum/rabbitmq
