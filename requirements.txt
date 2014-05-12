@@ -6,3 +6,4 @@ dj-database-url
 psycopg2
 south
 celery
+flower
