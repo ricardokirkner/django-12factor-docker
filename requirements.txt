@@ -4,3 +4,4 @@ django-dotenv
 django-getenv
 dj-database-url
 psycopg2
+south
