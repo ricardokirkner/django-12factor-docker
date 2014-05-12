@@ -91,3 +91,13 @@ STATIC_ROOT = 'static'
 LOGGING = {
     'version': 1
 }
+
+##########
+# CELERY #
+##########
+
+BROKER_URL = env('BROKER_URL', 'amqp://guest:guest@localhost/')
+CELERY_RESULT_BACKEND = 'db+' + env('DATABASE_URL')
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
