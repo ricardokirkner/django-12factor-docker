@@ -12,9 +12,14 @@ app:
   command: make start
   volumes:
     - .:/code
+  ports:
+    - "5555:5555"
   expose:
     - "8000"
   links:
     - db
+    - amqp
 db:
   image: orchardup/postgresql
+amqp:
+  image: tutum/rabbitmq
