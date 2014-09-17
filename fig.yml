@@ -1,10 +1,9 @@
 web:
   build: web
   volumes:
-    - web/var/log/nginx:/var/log/nginx
-    - static:/var/www/example/static
+    - static:/usr/local/nginx/html/static
   ports:
-    - "8000:80"
+    - "80:80"
   links:
     - app
 app:
@@ -14,8 +13,7 @@ app:
     - .:/code
   ports:
     - "5555:5555"
-  expose:
-    - "8000"
+    - "8000:8000"
   links:
     - db
     - amqp
