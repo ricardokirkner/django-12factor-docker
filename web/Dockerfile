@@ -1,9 +1,5 @@
-FROM orchardup/nginx
+FROM nginx
 
-# add site config
-ADD etc/nginx/sites-available/example /etc/nginx/sites-available/example
+# add nginx config
+ADD nginx.conf /etc/nginx.conf
 
-# add custom launcher script
-ADD run_nginx.sh /
-
-CMD ["/run_nginx.sh"]
