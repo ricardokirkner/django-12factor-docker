@@ -15,12 +15,7 @@ build: .build
 
 .PHONY: up
 up: build
-# need to sleep a bit to ensure container is fully up
-# so that environment variables are properly populated
-	@. env/bin/activate; fig up -d db; sleep 1
-	@. env/bin/activate; fig up -d amqp; sleep 1
-	@. env/bin/activate; fig up -d app; sleep 1
-	@. env/bin/activate; fig up -d web
+	@. env/bin/activate; fig up
 
 .PHONY: down
 down:
@@ -51,14 +46,13 @@ clean-env:
 
 .PHONY: .env
 .env:
-	@echo "DATABASE_URL=postgres://docker:docker@${DB_1_PORT_5432_TCP_ADDR}:${DB_1_PORT_5432_TCP_PORT}/docker\n\
-	BROKER_URL=amqp://guest:guest@${AMQP_1_PORT_5672_TCP_ADDR}:${AMQP_1_PORT_5672_TCP_PORT}/\n\
-	DEBUG=True\
-	"> .env
+	@echo "DATABASE_URL=postgres://docker:docker@${DB_1_PORT_5432_TCP_ADDR}:${DB_1_PORT_5432_TCP_PORT}/docker" > .env
+	@echo "BROKER_URL=amqp://guest:guest@${AMQP_1_PORT_5672_TCP_ADDR}:${AMQP_1_PORT_5672_TCP_PORT}/" >> .env
+	@echo "DEBUG=True" >> .env
+	@echo "C_FORCE_ROOT=1" >> .env
 
 start: .env
 	@python manage.py syncdb --noinput
 	@python manage.py migrate --noinput
 	@python manage.py collectstatic --noinput
 	@foreman start
-
