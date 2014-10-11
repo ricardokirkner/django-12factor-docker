@@ -56,3 +56,6 @@ start: .env
 	@python manage.py migrate --noinput
 	@python manage.py collectstatic --noinput
 	@foreman start
+
+superuser:
+	@fig run app python /code/manage.py createsuperuser
