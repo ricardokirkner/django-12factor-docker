@@ -2,6 +2,7 @@ web:
   build: web
   volumes:
     - static:/usr/local/nginx/html/static
+    - log/nginx:/var/log/nginx
   ports:
     - "80:80"
   links:
