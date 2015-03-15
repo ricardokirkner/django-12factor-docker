@@ -2,9 +2,9 @@
 
 help:
 	@echo "help      -- print this help"
-	@echo "build     -- build fig environment"
-	@echo "up        -- start fig stack"
-	@echo "down      -- stop fig stack"
+	@echo "build     -- build docker environment"
+	@echo "up        -- start docker stack"
+	@echo "down      -- stop docker stack"
 	@echo "env       -- create a virtualenv"
 	@echo "clean     -- clean all artifacts"
 
@@ -15,14 +15,14 @@ build: .build
 
 .PHONY: up
 up: build
-	@. env/bin/activate; fig up
+	@. env/bin/activate; docker-compose up
 
 .PHONY: down
 down:
-	@. env/bin/activate; fig stop
+	@. env/bin/activate; docker-compose stop
 
 .PHONY: clean
-clean: clean-fig clean-env
+clean: clean-docker clean-env
 	@rm -f .build
 
 # helpers
@@ -32,13 +32,13 @@ env/bin/activate: build-requirements.txt
 	@. env/bin/activate; pip install -r build-requirements.txt
 	@touch env/bin/activate
 
-.build: env fig.yml Dockerfile requirements.txt
-	@. env/bin/activate; fig build
+.build: env docker-compose.yml
+	@. env/bin/activate; docker-compose build
 	@touch .build
 
-.PHONY: clean-fig
-clean-fig:
-	@. env/bin/activate; fig rm --force
+.PHONY: clean-docker
+clean-docker:
+	@. env/bin/activate; docker-compose rm --force
 
 .PHONY: clean-env
 clean-env:
@@ -58,4 +58,4 @@ start: .env
 	@foreman start
 
 superuser:
-	@fig run app python /code/manage.py createsuperuser
+	@docker-compose run app python /usr/src/app/manage.py createsuperuser
