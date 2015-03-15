@@ -1,0 +1,23 @@
+app:
+  build: app
+  volumes:
+    - app:/usr/src/app
+    - log/app:/usr/src/app/logs
+  ports:
+    - "8000:8000"
+  links:
+    - db
+  environment:
+    DATABASE_URL: postgres://postgres@db/postgres
+    DEBUG: True
+db:
+  image: postgres
+  volumes_from:
+    - dbdata
+  ports:
+    - "5432"
+dbdata:
+  image: postgres
+  volumes:
+    - /var/lib/postgresql
+  command: true

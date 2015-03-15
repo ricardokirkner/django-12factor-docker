@@ -40,7 +40,6 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gunicorn',
-    'south',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -89,14 +88,20 @@ STATIC_ROOT = 'static'
 ###########
 
 LOGGING = {
-    'version': 1
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': 'logs/debug.log',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['file'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+    },
 }
-
-##########
-# CELERY #
-##########
-
-BROKER_URL = env('BROKER_URL', 'amqp://guest:guest@localhost/')
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
