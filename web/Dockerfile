@@ -1,5 +1,5 @@
 FROM nginx
 
 # add nginx config
-ADD nginx.conf /etc/nginx/nginx.conf
+ADD app.conf /etc/nginx/conf.d/default.conf
 
