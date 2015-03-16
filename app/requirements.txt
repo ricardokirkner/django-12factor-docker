@@ -1,8 +1,6 @@
-Django==1.6.4
+Django==1.7.6
 gunicorn
-django-dotenv
 django-getenv
 dj-database-url
 psycopg2
-south
 celery
