@@ -34,13 +34,20 @@ dbdata:
     - /var/lib/postgresql
   command: true
 amqp:
-  image: rabbitmq
+  image: rabbitmq:management
   volumes_from:
     - amqpdata
   ports:
     - "5672"
+    - "15672"
 amqpdata:
   image: rabbitmq
   volumes:
     - /var/lib/rabbitmq
   command: true
+flower:
+  image: nicholsn/docker-flower
+  links:
+    - amqp:mq
+  ports:
+    - "5555:5555"
