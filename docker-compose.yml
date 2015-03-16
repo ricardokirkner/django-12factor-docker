@@ -1,7 +1,7 @@
 web:
   build: web
   volumes:
-    - log/nginx:/var/log/nginx
+    - data/logs/nginx:/var/log/nginx
     - data/static:/usr/share/nginx/html:ro
   ports:
     - "80:80"
@@ -11,7 +11,7 @@ app:
   build: app
   volumes:
     - app:/usr/src/app
-    - log/app:/usr/src/app/logs
+    - data/logs/app:/usr/src/app/logs
     - data/static:/usr/src/app/static
   ports:
     - "8000:8000"
