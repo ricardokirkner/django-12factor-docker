@@ -13,8 +13,8 @@ app:
     - app:/usr/src/app
     - data/logs/app:/usr/src/app/logs
     - data/static:/usr/src/app/static
-  ports:
-    - "8000:8000"
+  expose:
+    - "8000"
   links:
     - db
     - amqp
@@ -29,7 +29,7 @@ db:
   image: postgres
   volumes_from:
     - dbdata
-  ports:
+  expose:
     - "5432"
 dbdata:
   image: postgres
@@ -40,7 +40,7 @@ amqp:
   image: rabbitmq:management
   volumes_from:
     - amqpdata
-  ports:
+  expose:
     - "5672"
     - "15672"
 amqpdata:
