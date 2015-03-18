@@ -18,10 +18,13 @@ app:
   links:
     - db
     - amqp
+    - sentry
   environment:
     DATABASE_URL: postgres://postgres@db/postgres
     BROKER_URL: amqp://guest:guest@amqp/
     DEBUG: True
+  env_file:
+    - conf/app.env
 db:
   image: postgres
   volumes_from:
@@ -51,3 +54,13 @@ flower:
     - amqp:mq
   ports:
     - "5555:5555"
+sentry:
+  image: slafs/sentry
+  volumes:
+    - data/sentry:/data
+  ports:
+    - "9000:9000"
+  environment:
+    SENTRY_URL_PREFIX: http://localhost:9000
+  env_file:
+    - conf/sentry.env
