@@ -35,14 +35,31 @@ Change the value as you see fit.
 Quickstart
 ----------
 
-To start the sample application run
+First you need to start the sentry container so that you can
+generate the credentials required for the app to be able to
+send error reports to it.
+
+$ make up SERVICE=sentry
+
+Once the service is up, log into http://localhost:9000 using the default admin credentials
+for the sentry server:
+
+- username: admin
+- password: admin
+
+Create a default organization, team and project, and let it generate an api
+key for our Django project. With that key, create a file *conf/app.env* with the contents:
+
+RAVEN_DSN=http://<key>:<secret>@sentry:9000/<id>
+
+Now it’s time to start the stack. Just run
 
 $ make up
 
 This will rebuild any containers that have been updated and will then
 start the full stack.
 
-To stop the sample application run
+To stop the stack run
 
 $ make stop
 
