@@ -20,8 +20,8 @@ app:
     - amqp
     - sentry
   environment:
-    DATABASE_URL: postgres://postgres@db/postgres
     BROKER_URL: amqp://guest:guest@amqp/
+    DATABASE_URL: postgres://postgres@db/postgres
     DEBUG: True
   env_file:
     - conf/app.env
@@ -65,16 +65,29 @@ sentrydbdata:
   volumes:
     - /var/lib/postgresql
   command: true
+sentryredis:
+  image: redis
+  volumes_from:
+    - sentryredisdata
+  expose:
+    - "6379"
+sentryredisdata:
+  image: redis
+  volumes:
+    - data/sentryredis:/data
+  command: true
 sentry:
   image: slafs/sentry
   volumes:
     - data/sentry:/data
   links:
     - sentrydb
+    - sentryredis:redis
   ports:
     - "9000:9000"
   environment:
-    SENTRY_URL_PREFIX: http://localhost:9000
+    CACHE_URL: hiredis://redis:6379/2/
     DATABASE_URL: postgres://postgres@sentrydb/postgres
+    SENTRY_URL_PREFIX: http://localhost:9000
   env_file:
     - conf/sentry.env
