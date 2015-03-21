@@ -68,7 +68,7 @@ And then verify it shows up in http://localhost:9000
 
 To stop the stack run
 
-$ make stop
+$ make down
 
 For other possible targets run
 
