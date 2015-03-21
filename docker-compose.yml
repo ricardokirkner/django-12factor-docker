@@ -76,6 +76,20 @@ sentryredisdata:
   volumes:
     - data/sentryredis:/data
   command: true
+sentryworker:
+  image: slafs/sentry
+  volumes:
+    - data/sentry:/data
+  links:
+    - sentrydb
+    - sentryredis:redis
+  environment:
+    CACHE_URL: hiredis://redis:6379/2/
+    DATABASE_URL: postgres://postgres@sentrydb/postgres
+    SENTRY_URL_PREFIX: http://localhost:9000
+  env_file:
+    - conf/sentry.env
+  command: celery worker -B
 sentry:
   image: slafs/sentry
   volumes:

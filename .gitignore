@@ -55,5 +55,4 @@ docs/_build/
 # Custom project files
 .build
 .env
-conf/
 data/
