@@ -1,5 +1,7 @@
 .DEFAULT_GOAL := help
 
+SERVICE ?= 
+
 help:
 	@echo "help      -- print this help"
 	@echo "build     -- build docker environment"
@@ -15,11 +17,11 @@ build: .build
 
 .PHONY: up
 up: build
-	@. env/bin/activate; docker-compose up
+	@. env/bin/activate; docker-compose up $(SERVICE)
 
 .PHONY: down
 down:
-	@. env/bin/activate; docker-compose stop
+	@. env/bin/activate; docker-compose stop $(SERVICE)
 
 .PHONY: clean
 clean: clean-docker clean-env
@@ -33,7 +35,7 @@ env/bin/activate: build-requirements.txt
 	@touch env/bin/activate
 
 .build: env docker-compose.yml
-	@. env/bin/activate; docker-compose build
+	@. env/bin/activate; docker-compose build $(SERVICE)
 	@touch .build
 
 .PHONY: clean-docker

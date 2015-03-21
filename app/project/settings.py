@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'gunicorn',
+    'raven.contrib.django.raven_compat',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -114,3 +115,11 @@ BROKER_URL = env('BROKER_URL', 'amqp://guest:guest@localhost/')
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
+
+#########
+# RAVEN #
+#########
+
+RAVEN_CONFIG = {
+    'dsn': env('RAVEN_DSN', '')
+}
