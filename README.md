@@ -59,6 +59,13 @@ $ make up
 This will rebuild any containers that have been updated and will then
 start the full stack.
 
+To verify sentry is properly working with the provided credentials, you
+can submit a test message to sentry like
+
+$ docker-compose run app python manage.py raven test
+
+And then verify it shows up in http://localhost:9000
+
 To stop the stack run
 
 $ make stop
@@ -80,6 +87,11 @@ Currently the stack consists of:
 - amqpdata: a data volume container for the amqp container
 - flower: a web application for monitoring and administering the rabbitmq server
 - sentry: a modern error logging and aggregation platform
+- sentryworker: celery workers for processing sentry events
+- sentryredis: redis backend for caching and celery tasks for sentry
+- sentryredisdata: a data volume container for the sentryredis container
+- sentrydb: a postgresql database for sentry
+- sentrydbdata: a data volume container for the sentrydb container
 
 The only containers exposed on the host are:
 - web: to access the application as it’s intended in production,
