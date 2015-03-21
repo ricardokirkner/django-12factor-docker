@@ -54,13 +54,27 @@ flower:
     - amqp:mq
   ports:
     - "5555:5555"
+sentrydb:
+  image: postgres
+  volumes_from:
+    - sentrydbdata
+  expose:
+    - "5432"
+sentrydbdata:
+  image: postgres
+  volumes:
+    - /var/lib/postgresql
+  command: true
 sentry:
   image: slafs/sentry
   volumes:
     - data/sentry:/data
+  links:
+    - sentrydb
   ports:
     - "9000:9000"
   environment:
     SENTRY_URL_PREFIX: http://localhost:9000
+    DATABASE_URL: postgres://postgres@sentrydb/postgres
   env_file:
     - conf/sentry.env
