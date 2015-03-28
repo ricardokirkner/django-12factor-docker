@@ -92,11 +92,14 @@ Currently the stack consists of:
 - sentryredisdata: a data volume container for the sentryredis container
 - sentrydb: a postgresql database for sentry
 - sentrydbdata: a data volume container for the sentrydb container
+- elk: a full ELK stack (elasticsearch/logstash/kibana)
+- logstashforwarder: a container running logstash-forwarder to process logs from other containers
 
 The only containers exposed on the host are:
 - web: to access the application as it’s intended in production,
 - flower: to access the admin console for the rabbitmq server
 - sentry: to view the logs and errors
+- elk: to view logs via kibana and to inspect elasticsearch (for easier debugging)
 
 Limiting the services accessible from the host is intended to
 simulate a production environment where all other parts are
