@@ -5,3 +5,4 @@ dj-database-url
 psycopg2
 celery
 raven
+django-statsd
