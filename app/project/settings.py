@@ -41,15 +41,18 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     'gunicorn',
     'raven.contrib.django.raven_compat',
+    'django_statsd',
 )
 
 MIDDLEWARE_CLASSES = (
+    'django_statsd.middleware.StatsdMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django_statsd.middleware.StatsdMiddlewareTimer',
 )
 
 ROOT_URLCONF = 'project.urls'
@@ -123,3 +126,9 @@ CELERY_TASK_SERIALIZER = 'json'
 RAVEN_CONFIG = {
     'dsn': env('RAVEN_DSN', '')
 }
+
+##########
+# STATSD #
+##########
+
+STATSD_HOST = env('STATSD_HOST', 'localhost')
