@@ -1,21 +1,39 @@
+consul:
+  image: progrium/consul
+  ports:
+    - "8300:8300"
+    - "8400:8400"
+    - "8500:8500"
+    - "8600:53/udp"
+  command: -server -bootstrap -advertise 172.17.0.1
+registrator:
+  image: gliderlabs/registrator
+  command: consul://consul:8500
+  hostname: registrator
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+  links:
+    - consul
 web:
   build: web
   volumes:
-    - data/logs/nginx:/var/log/nginx
-    - data/static:/usr/share/nginx/html:ro
+    - "./data/logs/nginx:/var/log/nginx"
+    - "./data/static:/usr/share/nginx/html:ro"
   ports:
     - "80:80"
   links:
+    - consul
     - app
 app:
   build: app
   volumes:
-    - app:/usr/src/app
-    - data/logs/app:/usr/src/app/logs
-    - data/static:/usr/src/app/static
-  expose:
+    - "./app:/usr/src/app"
+    - "./data/logs/app:/usr/src/app/logs"
+    - "./data/static:/usr/src/app/static"
+  ports:
     - "8000"
   links:
+    - consul
     - db
     - amqp
     - sentry
@@ -25,6 +43,8 @@ app:
     DATABASE_URL: postgres://postgres@db/postgres
     DEBUG: True
     STATSD_HOST: graphite
+    SERVICE_8000_NAME: "app"
+    SERVICE_8000_TAGS: "backend,app"
   env_file:
     - conf/app.env
 db:
@@ -36,8 +56,8 @@ db:
 dbdata:
   image: postgres
   volumes:
-    - /var/lib/postgresql
-  command: true
+    - "/var/lib/postgresql"
+  command: /bin/true
 amqp:
   image: rabbitmq:management
   volumes_from:
@@ -48,8 +68,8 @@ amqp:
 amqpdata:
   image: rabbitmq
   volumes:
-    - /var/lib/rabbitmq
-  command: true
+    - "/var/lib/rabbitmq"
+  command: /bin/true
 flower:
   image: nicholsn/docker-flower
   links:
@@ -65,8 +85,8 @@ sentrydb:
 sentrydbdata:
   image: postgres
   volumes:
-    - /var/lib/postgresql
-  command: true
+    - "/var/lib/postgresql"
+  command: /bin/true
 sentryredis:
   image: redis
   volumes_from:
@@ -76,12 +96,12 @@ sentryredis:
 sentryredisdata:
   image: redis
   volumes:
-    - data/sentryredis:/data
-  command: true
+    - "./data/sentryredis:/data"
+  command: /bin/true
 sentryworker:
   image: slafs/sentry
   volumes:
-    - data/sentry:/data
+    - "./data/sentry:/data"
   links:
     - sentrydb
     - sentryredis:redis
@@ -95,7 +115,7 @@ sentryworker:
 sentry:
   image: slafs/sentry
   volumes:
-    - data/sentry:/data
+    - "./data/sentry:/data"
   links:
     - sentrydb
     - sentryredis:redis
@@ -110,8 +130,8 @@ sentry:
 elk:
   image: sebp/elk
   volumes:
-    - conf/logstash-forwarder.crt:/etc/pki/tls/certs/logstash-forwarder.crt
-    - conf/logstash-forwarder.key:/etc/pki/tls/private/logstash-forwarder.key
+    - "./conf/logstash-forwarder.crt:/etc/pki/tls/certs/logstash-forwarder.crt"
+    - "./conf/logstash-forwarder.key:/etc/pki/tls/private/logstash-forwarder.key"
   ports:
     - "5601:5601"
     - "9200:9200"
@@ -120,9 +140,9 @@ elk:
 logstashforwarder:
   image: million12/logstash-forwarder
   volumes:
-    - conf/logstash-forwarder.conf:/etc/logstash/forwarder.conf
-    - conf/logstash-forwarder.crt:/etc/logstash/ssl/logstash-forwarder.crt
-    - data/logs:/data/logs
+    - "./conf/logstash-forwarder.conf:/etc/logstash/forwarder.conf"
+    - "./conf/logstash-forwarder.crt:/etc/logstash/ssl/logstash-forwarder.crt"
+    - "./data/logs:/data/logs"
   links:
     - elk
 graphite:
