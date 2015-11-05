@@ -1,8 +1,8 @@
 web:
   build: web
   volumes:
-    - data/logs/nginx:/var/log/nginx
-    - data/static:/usr/share/nginx/html:ro
+    - "./data/logs/nginx:/var/log/nginx"
+    - "./data/static:/usr/share/nginx/html:ro"
   ports:
     - "80:80"
   links:
@@ -10,9 +10,9 @@ web:
 app:
   build: app
   volumes:
-    - app:/usr/src/app
-    - data/logs/app:/usr/src/app/logs
-    - data/static:/usr/src/app/static
+    - "./app:/usr/src/app"
+    - "./data/logs/app:/usr/src/app/logs"
+    - "./data/static:/usr/src/app/static"
   expose:
     - "8000"
   links:
@@ -36,8 +36,8 @@ db:
 dbdata:
   image: postgres
   volumes:
-    - /var/lib/postgresql
-  command: true
+    - "/var/lib/postgresql"
+  command: /bin/true
 amqp:
   image: rabbitmq:management
   volumes_from:
@@ -48,8 +48,8 @@ amqp:
 amqpdata:
   image: rabbitmq
   volumes:
-    - /var/lib/rabbitmq
-  command: true
+    - "/var/lib/rabbitmq"
+  command: /bin/true
 flower:
   image: nicholsn/docker-flower
   links:
@@ -65,8 +65,8 @@ sentrydb:
 sentrydbdata:
   image: postgres
   volumes:
-    - /var/lib/postgresql
-  command: true
+    - "/var/lib/postgresql"
+  command: /bin/true
 sentryredis:
   image: redis
   volumes_from:
@@ -76,12 +76,12 @@ sentryredis:
 sentryredisdata:
   image: redis
   volumes:
-    - data/sentryredis:/data
-  command: true
+    - "./data/sentryredis:/data"
+  command: /bin/true
 sentryworker:
   image: slafs/sentry
   volumes:
-    - data/sentry:/data
+    - "./data/sentry:/data"
   links:
     - sentrydb
     - sentryredis:redis
@@ -95,7 +95,7 @@ sentryworker:
 sentry:
   image: slafs/sentry
   volumes:
-    - data/sentry:/data
+    - "./data/sentry:/data"
   links:
     - sentrydb
     - sentryredis:redis
@@ -110,8 +110,8 @@ sentry:
 elk:
   image: sebp/elk
   volumes:
-    - conf/logstash-forwarder.crt:/etc/pki/tls/certs/logstash-forwarder.crt
-    - conf/logstash-forwarder.key:/etc/pki/tls/private/logstash-forwarder.key
+    - "./conf/logstash-forwarder.crt:/etc/pki/tls/certs/logstash-forwarder.crt"
+    - "./conf/logstash-forwarder.key:/etc/pki/tls/private/logstash-forwarder.key"
   ports:
     - "5601:5601"
     - "9200:9200"
@@ -120,9 +120,9 @@ elk:
 logstashforwarder:
   image: million12/logstash-forwarder
   volumes:
-    - conf/logstash-forwarder.conf:/etc/logstash/forwarder.conf
-    - conf/logstash-forwarder.crt:/etc/logstash/ssl/logstash-forwarder.crt
-    - data/logs:/data/logs
+    - "./conf/logstash-forwarder.conf:/etc/logstash/forwarder.conf"
+    - "./conf/logstash-forwarder.crt:/etc/logstash/ssl/logstash-forwarder.crt"
+    - "./data/logs:/data/logs"
   links:
     - elk
 graphite:
