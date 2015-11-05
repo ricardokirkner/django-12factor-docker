@@ -1,3 +1,19 @@
+consul:
+  image: progrium/consul
+  ports:
+    - "8300:8300"
+    - "8400:8400"
+    - "8500:8500"
+    - "8600:53/udp"
+  command: -server -bootstrap -advertise 172.17.0.1
+registrator:
+  image: gliderlabs/registrator
+  command: consul://consul:8500
+  hostname: registrator
+  volumes:
+    - "/var/run/docker.sock:/tmp/docker.sock"
+  links:
+    - consul
 web:
   build: web
   volumes:
@@ -6,6 +22,7 @@ web:
   ports:
     - "80:80"
   links:
+    - consul
     - app
 app:
   build: app
@@ -13,9 +30,10 @@ app:
     - "./app:/usr/src/app"
     - "./data/logs/app:/usr/src/app/logs"
     - "./data/static:/usr/src/app/static"
-  expose:
+  ports:
     - "8000"
   links:
+    - consul
     - db
     - amqp
     - sentry
@@ -25,6 +43,8 @@ app:
     DATABASE_URL: postgres://postgres@db/postgres
     DEBUG: True
     STATSD_HOST: graphite
+    SERVICE_8000_NAME: "app"
+    SERVICE_8000_TAGS: "backend,app"
   env_file:
     - conf/app.env
 db:
